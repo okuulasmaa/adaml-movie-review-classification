@@ -15,18 +15,18 @@ def preprocess_data(text_list: list[str], labels_list: list[int], max_length: in
 
     data_rows = []
 
-    for i, text in enumerate(text_list):
+    for text in enumerate(text_list):
         # Text into tokens and filtering out unwanted tokens.
         tokens = word_tokenize(text.lower())
         tokens = [token for token in tokens if token.isalpha() and token not in stop_words]
-        
+
         # Finding the word embeeddings
         embeddings = np.array([nlp.vocab[word].vector for word in tokens])
 
         # Mean aggregate the embeddigns
         embeddings = embeddings.sum(axis=0) / embeddings.shape[0]
         data_rows.append(embeddings)
-
+        
     X = np.array(data_rows)
     y = np.array(labels_list)
 
