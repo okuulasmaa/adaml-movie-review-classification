@@ -19,5 +19,6 @@ def visualize_features(X, y, title=""):
     fig.legend(*scatter.legend_elements(), loc="outside center right")
     fig.tight_layout()
     fig.subplots_adjust(right=0.85)
-
+    path = "figs/"+title+".pdf"
+    plt.savefig(path)
     plt.show()
