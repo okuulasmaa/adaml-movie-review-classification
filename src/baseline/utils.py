@@ -5,8 +5,8 @@ import nltk
 def load_data(data_path: Path) -> tuple[list, list]:
 
     data_df = pd.read_parquet(data_path)
-    reviews = data_df["text"].to_list()
-    labels = data_df["label"].to_list()
+    reviews = data_df["text"].to_numpy()
+    labels = data_df["label"].to_numpy()
 
     return reviews, labels
 

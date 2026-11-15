@@ -4,7 +4,7 @@ import numpy as np
 import spacy
 
 
-def preprocess_data(text_list: list[str], labels_list: list[int], max_length: int=0):
+def preprocess_data(text_array: np.ndarray, labels: np.ndarray):
     '''
     Tokenizes the texts and converts the tokens into integers using hash()
     '''
@@ -15,7 +15,7 @@ def preprocess_data(text_list: list[str], labels_list: list[int], max_length: in
 
     data_rows = []
 
-    for text in enumerate(text_list):
+    for text in text_array:
         # Text into tokens and filtering out unwanted tokens.
         tokens = word_tokenize(text.lower())
         tokens = [token for token in tokens if token.isalpha() and token not in stop_words]
@@ -28,6 +28,6 @@ def preprocess_data(text_list: list[str], labels_list: list[int], max_length: in
         data_rows.append(embeddings)
         
     X = np.array(data_rows)
-    y = np.array(labels_list)
+    y = labels if type(labels) is np.ndarray else np.array(labels)
 
     return X, y
