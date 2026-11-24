@@ -37,3 +37,26 @@ def plot_confusion_matrix(preds, labels, classes):
     cm_disp.plot(cmap='gray')
 
     plt.show()
+
+
+def plot_loss_curve(train_losses, val_losses):
+
+    epochs = range(1, len(train_losses) + 1)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+
+    print(len(train_losses))
+
+    ax.plot(epochs, train_losses)
+    ax.plot(epochs, val_losses)
+    
+    ax.set_xlabel("Epoch")
+    ax.set_ylabel("Loss")
+    ax.legend(["Training", "Validation"])
+
+    path = Path("figs/loss_curve.pdf")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(path)
+    plt.show()

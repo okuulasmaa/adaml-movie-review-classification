@@ -5,10 +5,7 @@ import spacy
 
 
 def preprocess_data(text_array: np.ndarray, labels: np.ndarray):
-    '''
-    Tokenizes the texts and converts the tokens into integers using hash()
-    '''
-
+    
     nlp = spacy.load('en_core_web_md')
 
     stop_words = set(stopwords.words("english"))

@@ -1,7 +1,7 @@
 from pathlib import Path
 import numpy as np
 
-from src.baseline.utils import load_data, download_prerequisites
+from src.utils import load_data, download_prerequisites
 from src.baseline.preprocess import preprocess_data
 from src.visualize import visualize_features
 from src.baseline.train import train
