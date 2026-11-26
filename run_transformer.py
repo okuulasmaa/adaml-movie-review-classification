@@ -40,7 +40,7 @@ def main():
 
     torch.manual_seed(SEED)
 
-    model_dir = Path("models")
+    model_dir = Path("models") / args.dataset.name
 
     # Loading the data
     train_path = args.dataset / "train-00000-of-00001.parquet"
