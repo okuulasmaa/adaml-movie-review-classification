@@ -46,9 +46,6 @@ def plot_loss_curve(train_losses, val_losses):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-
-    print(len(train_losses))
-
     ax.plot(epochs, train_losses)
     ax.plot(epochs, val_losses)
     
@@ -57,6 +54,25 @@ def plot_loss_curve(train_losses, val_losses):
     ax.legend(["Training", "Validation"])
 
     path = Path("figs/loss_curve.pdf")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(path)
+    plt.show()
+
+
+def plot_class_counts(labels: np.ndarray, title="Class counts"):
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    # Find label counts
+    labels = labels.tolist()
+    label_counts = {label: labels.count(label) for label in np.unique(labels)}
+
+    ax.bar(label_counts.keys(), label_counts.values())
+
+    ax.set_title(title)
+
+    path = Path(f"figs/{title.replace(" ", "_")}.pdf")
     path.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(path)
     plt.show()

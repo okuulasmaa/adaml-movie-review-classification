@@ -1,32 +1,40 @@
+import argparse
 from pathlib import Path
 import numpy as np
 
 from src.utils import load_data, download_prerequisites
 from src.baseline.preprocess import preprocess_data
-from src.visualize import visualize_features
+from src.visualize import visualize_features, plot_class_counts
 from src.baseline.train import train
 from src.baseline.test import test
 
 
+def build_parser():
+
+    parser = argparse.ArgumentParser(description="Movie review classification.")
+    parser.add_argument("--dataset", type=Path, help="Path to the dataset directory.")
+
+    return parser
+
+
 def main():
+
+    parser = build_parser()
+    args = parser.parse_args()
 
     download_prerequisites()
 
     # Load data
     print("Loading the data...")
-    train_path = Path("data/train-00000-of-00001.parquet")
-    test_path = Path("data/test-00000-of-00001.parquet")
+    train_path = args.dataset / "train-00000-of-00001.parquet"
+    test_path = args.dataset / "test-00000-of-00001.parquet"
     train_reviews, train_labels = load_data(train_path)
     test_reviews, test_labels = load_data(test_path)
     print("Data loaded!")
 
-    # Class counts
-    num_train_positive = np.count_nonzero(train_labels == 1)
-    num_train_negative = np.count_nonzero(train_labels == 0)
-    num_test_positive = np.count_nonzero(test_labels == 1)
-    num_test_negative = np.count_nonzero(test_labels == 0)
-    print(f"Train data: {num_train_positive} positive, {num_train_negative} negative")
-    print(f"Test data: {num_test_positive} positive, {num_test_negative} negative")
+    # Visualize the class counts
+    plot_class_counts(train_labels, "train class counts")
+    plot_class_counts(test_labels, "test class counts") 
 
     # Preprocess
     print("Preprocessing the data (This might take a while)...")
@@ -40,7 +48,9 @@ def main():
     visualize_features(X_test, y_test, title="Test data")
 
     # Fit and test a baseline model
-    baseline_model = train(X_train, y_train)
+    print("Fitting the baseline model...")
+    baseline_model = train(X_train, y_train, max_iter=1000)
+    print("Testing the baseline model...")
     test(baseline_model, X_test, y_test)
 
 

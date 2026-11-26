@@ -5,6 +5,25 @@ import torch
 from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
 
+
+class Vocabulary:
+
+    def __init__(self):
+        self.word_count = 1
+        self.vocabulary = {}
+
+    def insert(self, word):
+        if not word in self.vocabulary.keys():
+            self.vocabulary[word] = self.word_count
+            self.word_count += 1
+
+    def get_encoding(self, word):
+        try:
+            return self.vocabulary[word]
+        except KeyError:
+            return -1
+
+
 def load_data(data_path: Path) -> tuple[list, list]:
 
     data_df = pd.read_parquet(data_path)
@@ -21,9 +40,9 @@ def download_prerequisites():
 
 
 # By Copilot
-class MovieReviewDataset(Dataset):
-    def __init__(self, embeddings, labels):
-        self.embeddings = embeddings
+class TokenDataset(Dataset):
+    def __init__(self, tokens, labels):
+        self.tokens = tokens
         self.labels = labels
 
     def __len__(self):
@@ -31,8 +50,8 @@ class MovieReviewDataset(Dataset):
 
     def __getitem__(self, idx):
         x = torch.tensor(
-            self.embeddings[idx],
-            dtype=torch.float32
+            self.tokens[idx],
+            dtype=torch.long
         )
 
         y = torch.tensor(
@@ -60,3 +79,12 @@ def collate_fn(batch):
     labels = torch.tensor(labels)
 
     return padded_sequences, lengths, labels
+
+
+# By Copilot
+def create_padding_mask(lengths, max_len, device):
+    return (
+        torch.arange(max_len, device=device)
+        .expand(len(lengths), max_len)
+        >= lengths.unsqueeze(1)
+    )
