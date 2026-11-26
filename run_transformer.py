@@ -2,6 +2,7 @@ import argparse
 from pathlib import Path
 import torch
 from torch.utils.data import DataLoader
+from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
 
 from src.utils import load_data, download_prerequisites, TokenDataset, collate_fn
@@ -47,6 +48,7 @@ def main():
     print("Preprocessing the data (This might take a while...)")
     X_train, y_train, vocab = preprocess_data(train_reviews, train_labels, max_tokens=200)
     X_test, y_test, _ = preprocess_data(test_reviews, test_labels, max_tokens=200, vocab=vocab)
+    class_weights = torch.tensor(compute_class_weight(class_weight="balanced", classes=np.unique(y_train), y=y_train)).to(device=device, dtype=torch.float)
     num_classes = len(np.unique(y_test))
     print("Data preprocessed!")
     
@@ -71,6 +73,7 @@ def main():
             vocab_size=vocab.word_count, 
             num_classes=num_classes, 
             epochs=10, 
+            class_weights=class_weights,
             device=device, 
             save_dir=model_dir
         )

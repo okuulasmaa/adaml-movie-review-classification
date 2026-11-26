@@ -10,7 +10,7 @@ from src.transformer.validate import validate
 from src.utils import create_padding_mask
 
 
-def train_transformer(train_loader, valid_loader=None, num_features=300, nhead=6, vocab_size=5000, num_classes=2, epochs=5, device="cpu", save_dir=Path("models")):
+def train_transformer(train_loader, valid_loader=None, num_features=300, nhead=6, vocab_size=5000, num_classes=2, epochs=5, class_weights=None, device="cpu", save_dir=Path("models")):
     
     transformer = TransformerClassifier(
         num_features=num_features, 
@@ -19,7 +19,7 @@ def train_transformer(train_loader, valid_loader=None, num_features=300, nhead=6
         nhead=nhead
     ).to(device)
     optimizer = optim.Adam(transformer.parameters(), lr=0.0001)
-    loss_fn = nn.CrossEntropyLoss()
+    loss_fn = nn.CrossEntropyLoss(weight=class_weights)
 
     save_dir.mkdir(parents=True, exist_ok=True)
 
